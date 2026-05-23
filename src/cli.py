@@ -17,7 +17,7 @@ console = Console()
 @click.group()
 @click.version_option(version="0.1.0")
 def main():
-    """AgentOS - Auto-generate RAG agents from documents."""
+    """Agent Factory - Auto-generate RAG agents from documents."""
     pass
 
 
@@ -33,7 +33,7 @@ def create(docs, name, description, requirement, output, config_path, skip_bench
     """Create a new agent from documents."""
     from src.core.orchestrator import Orchestrator
 
-    console.print(Panel("[bold blue]AgentOS[/bold blue] - Creating Agent", expand=False))
+    console.print(Panel("[bold blue]Agent Factory[/bold blue] - Creating Agent", expand=False))
 
     if not Path(docs).exists():
         console.print(f"[red]Error: Path not found: {docs}[/red]")

@@ -140,6 +140,7 @@ class AgentGenerator:
 
     def _generate_code(self, spec: AgentSpec) -> str:
         tools_list = ", ".join(f'"{t["type"]}"' for t in spec.tools)
+        sep = "\n\n---\n\n"
         return f'''"""Auto-generated Agent: {spec.name}"""
 
 from src.core.llm.client import LLMClient
@@ -176,7 +177,7 @@ class {self._to_class_name(spec.name)}:
             user_message, strategy=self.retrieval_strategy
         )
         contexts = [c.content for c in retrieval_result.chunks]
-        context_block = "\\n\\n---\\n\\n".join(contexts) if contexts else ""
+        context_block = {repr(sep)}.join(contexts) if contexts else ""
 
         # Run agent with tool access
         result = self.runtime.run(user_message, context=context_block)
@@ -188,7 +189,7 @@ class {self._to_class_name(spec.name)}:
             user_message, strategy=self.retrieval_strategy
         )
         contexts = [c.content for c in retrieval_result.chunks]
-        context_block = "\\n\\n---\\n\\n".join(contexts) if contexts else ""
+        context_block = {repr(sep)}.join(contexts) if contexts else ""
         sources = list({{c.source for c in retrieval_result.chunks}})
 
         result = self.runtime.run(user_message, context=context_block)

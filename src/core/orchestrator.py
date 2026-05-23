@@ -226,6 +226,17 @@ class Orchestrator:
             "tools": agent.spec.tools,
             "system_prompt": agent.spec.system_prompt,
         }, ensure_ascii=False, indent=2))
+        # Save chunks for BM25 rebuild on chat()
+        (out / "chunks.json").write_text(json.dumps([
+            {
+                "chunk_id": c.chunk_id,
+                "content": c.content,
+                "source": c.source,
+                "heading_path": c.heading_path,
+                "metadata": c.metadata,
+            }
+            for c in all_chunks
+        ], ensure_ascii=False, indent=2))
 
         benchmark_report = ""
         if benchmark_scores:
@@ -310,6 +321,12 @@ class Orchestrator:
             vector_store=store,
             embed_fn=self.embedding_client.embed,
         )
+
+        # Rebuild BM25 index from saved chunks
+        chunks_file = agent_path / "chunks.json"
+        if chunks_file.exists():
+            saved_chunks = json.loads(chunks_file.read_text())
+            retriever.build_bm25_index(saved_chunks)
 
         retrieval_strategy = agent_config.get("retrieval", {}).get("strategy", "hybrid")
         result = retriever.retrieve(question, strategy=retrieval_strategy)

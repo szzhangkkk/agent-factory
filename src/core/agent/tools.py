@@ -1,4 +1,4 @@
-"""Tool system for AgentOS: base class, registry, and built-in tools."""
+"""Tool system for Agent Factory: base class, registry, and built-in tools."""
 
 from __future__ import annotations
 

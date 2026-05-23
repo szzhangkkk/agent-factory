@@ -1,4 +1,4 @@
-"""FastAPI web application for AgentOS."""
+"""FastAPI web application for Agent Factory."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
-app = FastAPI(title="AgentOS", version="0.1.0", description="Auto-generate RAG agents from documents")
+app = FastAPI(title="Agent Factory", version="0.1.0", description="Auto-generate RAG agents from documents")
 
 app.add_middleware(
     CORSMiddleware,

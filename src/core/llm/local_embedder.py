@@ -4,8 +4,6 @@ from __future__ import annotations
 
 import os
 
-os.environ.setdefault("HF_HUB_OFFLINE", "1")
-
 
 class LocalEmbedder:
     """Embedding using local sentence-transformers model.

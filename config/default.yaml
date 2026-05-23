@@ -1,4 +1,4 @@
-# AgentOS Default Configuration
+# Agent Factory Default Configuration
 
 llm:
   provider: deepseek
@@ -9,11 +9,8 @@ llm:
   max_tokens: 4096
 
 embedding:
-  provider: openai_compatible
-  base_url: https://api.siliconflow.cn/v1
-  api_key: ""
-  model: BAAI/bge-large-zh-v1.5
-  dimension: 1024
+  provider: local
+  model: BAAI/bge-small-zh-v1.5
 
 vector_db:
   type: milvus_lite
