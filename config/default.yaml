@@ -1,0 +1,44 @@
+# AgentOS Default Configuration
+
+llm:
+  provider: deepseek
+  base_url: https://api.deepseek.com/v1
+  api_key: ""
+  model: deepseek-chat
+  temperature: 0.7
+  max_tokens: 4096
+
+embedding:
+  provider: openai_compatible
+  base_url: https://api.siliconflow.cn/v1
+  api_key: ""
+  model: BAAI/bge-large-zh-v1.5
+  dimension: 1024
+
+vector_db:
+  type: milvus_lite
+  path: ./data/vectordb
+  collection: agent_docs
+
+chunking:
+  strategy: semantic
+  max_chunk_size: 1024
+  overlap: 128
+  respect_structure: true
+
+retrieval:
+  strategy: hybrid
+  top_k: 5
+  vector_weight: 0.7
+  bm25_weight: 0.3
+  rerank: true
+  rerank_top_k: 5
+
+benchmark:
+  test_questions_per_doc: 5
+  metrics:
+    - recall
+    - precision
+    - mrr
+    - faithfulness
+    - relevance

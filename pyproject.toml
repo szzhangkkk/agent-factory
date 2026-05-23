@@ -1,0 +1,32 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agent-factory"
+version = "0.1.0"
+description = "Auto-generate production-ready RAG agents from documents"
+requires-python = ">=3.10"
+dependencies = [
+    "markitdown[all]>=0.1.0",
+    "pymilvus[model]>=2.4.0",
+    "openai>=1.0.0",
+    "anthropic>=0.30.0",
+    "fastapi>=0.110.0",
+    "uvicorn>=0.29.0",
+    "pydantic>=2.0.0",
+    "pyyaml>=6.0",
+    "jieba>=0.42.1",
+    "rank-bm25>=0.2.2",
+    "sentence-transformers>=2.0.0",
+    "rich>=13.0.0",
+    "click>=8.0.0",
+    "numpy>=1.24.0",
+    "pandas>=2.0.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0.0", "pytest-asyncio>=0.23.0"]
+
+[project.scripts]
+agent-factory = "src.cli:main"

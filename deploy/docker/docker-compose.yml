@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  milvus:
+    image: milvusdb/milvus:v2.4-latest
+    container_name: agent-factory-milvus
+    ports:
+      - "19530:19530"
+      - "9091:9091"
+    environment:
+      - ETCD_USE_EMBED=true
+      - COMMON_STORAGETYPE=local
+    volumes:
+      - milvus_data:/var/lib/milvus
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+
+  agent-backend:
+    build:
+      context: ../..
+      dockerfile: deploy/docker/Dockerfile
+    container_name: agent-factory-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../../config:/app/config
+      - ../../output:/app/output
+      - agent_data:/app/data
+    environment:
+      - MILVUS_HOST=milvus
+      - MILVUS_PORT=19530
+    depends_on:
+      milvus:
+        condition: service_healthy
+    command: uvicorn src.web.api.app:app --host 0.0.0.0 --port 8000
+
+volumes:
+  milvus_data:
+  agent_data:
