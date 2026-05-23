@@ -63,7 +63,7 @@ export default function AgentPage() {
           </Form.Item>
           <Form.Item label="跳过 Benchmark">
             <Switch checked={skipBench} onChange={setSkipBench} />
-            <span style={{ marginLeft: 8, color: '#999' }}>{skipBench ? '跳过评测，更快生成' : '自动评测选择最优配置'}</span>
+            <span style={{ marginLeft: 8, color: 'var(--text-secondary)' }}>{skipBench ? '跳过评测，更快生成' : '自动评测选择最优配置'}</span>
           </Form.Item>
           <Form.Item>
             <Button type="primary" icon={<RocketOutlined />} size="large" loading={loading} onClick={handleCreate}>
@@ -101,7 +101,7 @@ export default function AgentPage() {
               </>
             )}
           </Descriptions>
-          <div style={{ marginTop: 16, color: '#999' }}>
+          <div style={{ marginTop: 16, color: 'var(--text-secondary)' }}>
             前往 "对话测试" 页面与 Agent 对话，可以观察到 Agent 使用工具和推理的过程。
           </div>
         </Card>

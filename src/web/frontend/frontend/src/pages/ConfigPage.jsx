@@ -137,7 +137,7 @@ export default function ConfigPage() {
               {EMBEDDING_PRESETS.map(p => <Select.Option key={p.id} value={p.id}>{p.name}</Select.Option>)}
             </Select>
             {selectedEmb?.docs && (
-              <div style={{ marginTop: 4, fontSize: 12, color: '#999' }}>
+              <div style={{ marginTop: 4, fontSize: 12, color: 'var(--text-secondary)' }}>
                 获取 Key: <a href={selectedEmb.docs} target="_blank" rel="noreferrer">{selectedEmb.docs}</a>
               </div>
             )}

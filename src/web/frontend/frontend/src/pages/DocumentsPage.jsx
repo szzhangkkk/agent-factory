@@ -78,7 +78,7 @@ export default function DocumentsPage() {
       )}
 
       <Card title="使用提示" size="small">
-        <ul style={{ color: '#999', margin: 0, paddingLeft: 20 }}>
+        <ul style={{ color: 'var(--text-secondary)', margin: 0, paddingLeft: 20 }}>
           <li>上传文档后，前往 "Agent 创建" 页面生成 Agent</li>
           <li>系统会自动将文档转换为 Markdown 并构建知识库</li>
           <li>支持批量上传，推荐一次上传同一主题的文档</li>

@@ -1,14 +1,347 @@
 :root {
-  color-scheme: dark;
+  color-scheme: light;
+
+  /* Backgrounds */
+  --bg-base: #f4f4f5;
+  --bg-surface: #ffffff;
+  --bg-elevated: #ffffff;
+
+  /* Accent */
+  --accent: #6e56cf;
+  --accent-hover: #5b44b9;
+  --accent-soft: rgba(110, 86, 207, 0.08);
+
+  /* Semantic */
+  --color-success: #16a34a;
+  --color-error: #dc2626;
+  --color-warning: #d97706;
+  --color-gold: #ca8a04;
+
+  /* Text */
+  --text-primary: #18181b;
+  --text-secondary: #71717a;
+  --text-tertiary: #a1a1aa;
+
+  /* Borders */
+  --border: #e4e4e7;
+  --border-hover: #d4d4d8;
 }
 
 body {
   margin: 0;
-  background: #0d0d0d;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg-base);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--text-primary);
 }
 
 #root {
   width: 100%;
   min-height: 100vh;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--text-primary);
+}
+
+/* ── Scrollbar ── */
+*::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: #d4d4d8;
+  border-radius: 3px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: #a1a1aa;
+}
+
+/* ── Card ── */
+.ant-card {
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.ant-card:hover {
+  border-color: var(--border-hover) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+.ant-card-head {
+  border-bottom: 1px solid var(--border) !important;
+  min-height: 50px !important;
+  padding: 0 20px !important;
+}
+.ant-card-head-title {
+  color: var(--text-primary) !important;
+  padding: 14px 0 !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+.ant-card-body {
+  padding: 20px !important;
+}
+.ant-card-small .ant-card-body {
+  padding: 14px 18px !important;
+}
+
+/* ── Input / Select ── */
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-select-selector {
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border) !important;
+  transition: border-color 0.15s ease !important;
+  color: var(--text-primary) !important;
+}
+.ant-input:focus,
+.ant-input-focused,
+.ant-input-affix-wrapper-focused,
+.ant-select-focused .ant-select-selector {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 2px rgba(110, 86, 207, 0.1) !important;
+}
+.ant-input::placeholder {
+  color: var(--text-tertiary) !important;
+}
+.ant-input-group-addon {
+  background: var(--bg-base) !important;
+  border-color: var(--border) !important;
+  color: var(--text-secondary) !important;
+}
+.ant-input,
+.ant-input-affix-wrapper {
+  padding: 7px 11px !important;
+  border-radius: 8px !important;
+}
+.ant-input-lg {
+  padding: 9px 14px !important;
+}
+.ant-select-dropdown {
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+.ant-select-item {
+  color: var(--text-primary) !important;
+  border-radius: 6px !important;
+}
+.ant-select-item-option-active {
+  background: var(--accent-soft) !important;
+}
+.ant-select-item-option-selected {
+  background: var(--accent-soft) !important;
+  font-weight: 500 !important;
+}
+
+/* ── Form ── */
+.ant-form-item-label > label {
+  color: var(--text-secondary) !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+}
+.ant-form-item {
+  margin-bottom: 18px !important;
+}
+.ant-form-vertical .ant-form-item-label {
+  padding: 0 0 5px 0 !important;
+}
+
+/* ── Button ── */
+.ant-btn-primary {
+  background: var(--accent) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+  font-weight: 500 !important;
+  transition: background 0.15s ease !important;
+}
+.ant-btn-primary:hover {
+  background: var(--accent-hover) !important;
+  box-shadow: none !important;
+}
+.ant-btn-default {
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  color: var(--text-primary) !important;
+  transition: border-color 0.15s ease !important;
+}
+.ant-btn-default:hover {
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+  box-shadow: none !important;
+}
+
+/* ── Menu ── */
+.ant-menu {
+  background: transparent !important;
+  border-inline-end: none !important;
+}
+.ant-menu-item {
+  transition: background 0.12s ease, color 0.12s ease;
+  margin: 1px 6px !important;
+  padding-left: 16px !important;
+  height: 34px !important;
+  line-height: 34px !important;
+  font-size: 12.5px !important;
+  border-radius: 5px !important;
+  color: var(--text-secondary) !important;
+  border-left: 3px solid transparent !important;
+}
+.ant-menu-item:hover {
+  background: rgba(0, 0, 0, 0.03) !important;
+  color: var(--text-primary) !important;
+}
+.ant-menu-item-selected {
+  background: rgba(110, 86, 207, 0.07) !important;
+  color: var(--accent) !important;
+  font-weight: 500 !important;
+  border-left: 3px solid var(--accent) !important;
+}
+
+/* ── Table ── */
+.ant-table {
+  background: transparent !important;
+}
+.ant-table-thead > tr > th {
+  background: var(--bg-base) !important;
+  border-bottom: 1px solid var(--border) !important;
+  color: var(--text-secondary) !important;
+  padding: 12px 16px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid var(--border) !important;
+  padding: 12px 16px !important;
+  transition: background 0.15s ease;
+  font-size: 13px;
+  color: var(--text-primary) !important;
+}
+.ant-table-tbody > tr:hover > td {
+  background: rgba(110, 86, 207, 0.03) !important;
+}
+.ant-table-column-sorter {
+  color: var(--text-tertiary) !important;
+}
+.ant-table-column-sorter-up.active,
+.ant-table-column-sorter-down.active {
+  color: var(--accent) !important;
+}
+
+/* ── Tag ── */
+.ant-tag {
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+/* ── Collapse ── */
+.ant-collapse {
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+}
+.ant-collapse-item {
+  border-bottom: 1px solid var(--border) !important;
+}
+.ant-collapse-header {
+  color: var(--text-primary) !important;
+  padding: 12px 16px !important;
+  font-size: 13px !important;
+}
+.ant-collapse-content-box {
+  color: var(--text-secondary) !important;
+  padding: 12px 16px !important;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* ── Steps ── */
+.ant-steps-item-process .ant-steps-item-icon {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+.ant-steps-item-finish .ant-steps-item-icon {
+  border-color: var(--accent) !important;
+}
+.ant-steps-item-finish .ant-steps-item-icon > .ant-steps-icon {
+  color: var(--accent) !important;
+}
+.ant-steps-item-title {
+  color: var(--text-primary) !important;
+}
+.ant-steps-item-description {
+  color: var(--text-secondary) !important;
+}
+
+/* ── Descriptions ── */
+.ant-descriptions-bordered .ant-descriptions-view {
+  border-color: var(--border) !important;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.ant-descriptions-bordered .ant-descriptions-item-label {
+  background: var(--bg-base) !important;
+  border-color: var(--border) !important;
+  color: var(--text-secondary) !important;
+  padding: 10px 14px !important;
+  font-size: 13px !important;
+}
+.ant-descriptions-bordered .ant-descriptions-item-content {
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+  padding: 10px 14px !important;
+  font-size: 13px;
+}
+
+/* ── Progress ── */
+.ant-progress-bg {
+  transition: all 0.4s ease;
+  border-radius: 4px !important;
+}
+
+/* ── Alert ── */
+.ant-alert {
+  border-radius: 8px !important;
+}
+
+/* ── Switch ── */
+.ant-switch-checked {
+  background: var(--accent) !important;
+}
+
+/* ── Spin ── */
+.ant-spin-dot-item {
+  background-color: var(--accent) !important;
+}
+
+/* ── Message ── */
+.ant-message-notice-content {
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  color: var(--text-primary) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* ── Upload ── */
+.ant-upload {
+  background: transparent !important;
+}
+
+/* ── Keyframes ── */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }

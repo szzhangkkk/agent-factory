@@ -181,10 +181,11 @@ class Orchestrator:
 
         best_config = "hybrid"
         benchmark_scores = {}
+        benchmark_comparison = []
 
         if not skip_benchmark:
             print("[4/6] Running benchmark...")
-            best_config, benchmark_scores = self._run_benchmark(all_chunks, retriever, store)
+            best_config, benchmark_scores, benchmark_comparison = self._run_benchmark(all_chunks, retriever, store)
         else:
             print("[4/6] Skipping benchmark (--skip-benchmark)")
 
@@ -212,7 +213,10 @@ class Orchestrator:
         retriever.top_k = self.config.get("retrieval", {}).get("top_k", 5)
 
         print("[6/6] Saving agent artifacts...")
-        out = Path(output_dir)
+        base = Path(output_dir)
+        base.mkdir(parents=True, exist_ok=True)
+        agent_dir_name = agent.spec.name.replace(" ", "_").lower() if agent.spec.name else "agent"
+        out = base / agent_dir_name
         out.mkdir(parents=True, exist_ok=True)
 
         (out / "agent.py").write_text(agent.code)
@@ -242,6 +246,10 @@ class Orchestrator:
         if benchmark_scores:
             benchmark_report = json.dumps(benchmark_scores, ensure_ascii=False, indent=2)
             (out / "benchmark_report.json").write_text(benchmark_report)
+        if benchmark_comparison:
+            (out / "benchmark_comparison.json").write_text(
+                json.dumps(benchmark_comparison, ensure_ascii=False, indent=2)
+            )
 
         print(f"\n✓ Agent '{agent.spec.name}' generated successfully!")
         print(f"  Output directory: {output_dir}")
@@ -305,10 +313,27 @@ class Orchestrator:
             "relevance": round(best_result.metrics.relevance, 3),
             "correctness": round(best_result.metrics.correctness, 3),
         }
-        return best, scores
+
+        # Save full per-strategy comparison
+        comparison = []
+        for name, result in runner.results.items():
+            m = result.metrics
+            comparison.append({
+                "config": name,
+                "recall": round(m.recall, 3),
+                "precision": round(m.precision, 3),
+                "mrr": round(m.mrr_score, 3),
+                "faithfulness": round(m.faithfulness, 3),
+                "relevance": round(m.relevance, 3),
+                "overall": round(m.overall_score, 3),
+                "latency": round(m.latency, 3),
+            })
+        comparison.sort(key=lambda x: x["overall"], reverse=True)
+
+        return best, scores, comparison
 
     def chat(self, agent_dir: str, question: str) -> dict:
-        """Chat with a generated agent using AgentRuntime."""
+        """Chat with a generated agent using AgentRuntime, with persistent memory."""
         agent_path = Path(agent_dir)
 
         config_path = agent_path / "config.yaml"
@@ -339,7 +364,8 @@ class Orchestrator:
         reasoning_strategy = agent_config.get("agent", {}).get("reasoning_strategy", "direct")
 
         # Create tool registry and agent runtime
-        registry = create_default_registry(retriever=retriever)
+        custom_tools = agent_config.get("custom_tools", [])
+        registry = create_default_registry(retriever=retriever, custom_tools=custom_tools)
         runtime = AgentRuntime(
             llm_client=self.llm_client,
             tool_registry=registry,
@@ -347,7 +373,19 @@ class Orchestrator:
             reasoning_strategy=reasoning_strategy,
         )
 
+        # Load conversation history from disk
+        history_file = agent_path / "chat_history.json"
+        if history_file.exists():
+            try:
+                saved = json.loads(history_file.read_text())
+                runtime.history = saved[-20:]  # Keep last 20 turns
+            except (json.JSONDecodeError, KeyError):
+                pass
+
         agent_result = runtime.run(question, context=context_block)
+
+        # Save updated history
+        history_file.write_text(json.dumps(runtime.history, ensure_ascii=False, indent=2))
 
         return {
             "answer": agent_result.content,

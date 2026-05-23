@@ -219,11 +219,51 @@ class TextAnalyzerTool(Tool):
             return f"未知分析类型: {action}"
 
 
-def create_default_registry(retriever=None) -> ToolRegistry:
-    """Create a ToolRegistry with default built-in tools."""
+class CustomHTTPTool(Tool):
+    """A custom tool that calls an HTTP API endpoint."""
+
+    def __init__(self, name: str, description: str, parameters: dict,
+                 url: str, method: str = "POST", headers: dict | None = None):
+        self.name = name
+        self.description = description
+        self.parameters = parameters
+        self.url = url
+        self.method = method.upper()
+        self.headers = headers or {"Content-Type": "application/json"}
+
+    def execute(self, **kwargs) -> str:
+        import urllib.request
+        import urllib.error
+
+        if self.method == "GET":
+            query = "&".join(f"{k}={v}" for k, v in kwargs.items())
+            url = f"{self.url}?{query}" if query else self.url
+            req = urllib.request.Request(url, headers=self.headers, method="GET")
+        else:
+            body = json.dumps(kwargs, ensure_ascii=False).encode()
+            req = urllib.request.Request(self.url, data=body, headers=self.headers, method=self.method)
+
+        try:
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                return resp.read().decode()
+        except urllib.error.URLError as e:
+            return f"HTTP 请求失败: {e}"
+
+
+def create_default_registry(retriever=None, custom_tools: list[dict] | None = None) -> ToolRegistry:
+    """Create a ToolRegistry with default built-in tools and optional custom tools."""
     registry = ToolRegistry()
     if retriever is not None:
         registry.register(DocumentRetrievalTool(retriever))
     registry.register(CalculatorTool())
     registry.register(TextAnalyzerTool())
+    for tool_def in (custom_tools or []):
+        registry.register(CustomHTTPTool(
+            name=tool_def["name"],
+            description=tool_def.get("description", ""),
+            parameters=tool_def.get("parameters", {"type": "object", "properties": {}}),
+            url=tool_def["url"],
+            method=tool_def.get("method", "POST"),
+            headers=tool_def.get("headers"),
+        ))
     return registry
