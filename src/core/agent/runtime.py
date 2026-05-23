@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 
 from src.core.llm.client import LLMClient, AgentResponse
 from src.core.agent.tools import ToolRegistry
@@ -130,7 +131,6 @@ class AgentRuntime:
     @staticmethod
     def _strip_react_markers(text: str) -> str:
         """Remove Thought:/Action:/Observation:/Final Answer: prefixes from output."""
-        import re
         # If there's a "Final Answer:", only keep what comes after it
         fa_match = re.search(r'Final Answer:\s*(.*)', text, re.DOTALL)
         if fa_match:
@@ -227,7 +227,6 @@ class AgentRuntime:
     def _extract_plan(self, text: str) -> list[str]:
         """Extract a JSON plan from LLM response text."""
         # Try to find JSON plan in the response
-        import re
         json_match = re.search(r'```json\s*(\{.*?\})\s*```', text, re.DOTALL)
         if json_match:
             try:
@@ -254,7 +253,6 @@ class AgentRuntime:
             line = line.strip()
             if line and line[0].isdigit() and (line[1] in ".、)" or line[:2] in ["1.", "2.", "3.", "4.", "5.", "6.", "7.", "8.", "9."]):
                 # Remove leading number and punctuation
-                import re
                 step = re.sub(r'^\d+[.、)\s]+', '', line)
                 if step:
                     plan_steps.append(step)

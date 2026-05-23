@@ -139,7 +139,6 @@ class AgentGenerator:
         )
 
     def _generate_code(self, spec: AgentSpec) -> str:
-        tools_list = ", ".join(f'"{t["type"]}"' for t in spec.tools)
         sep = "\n\n---\n\n"
         return f'''"""Auto-generated Agent: {spec.name}"""
 

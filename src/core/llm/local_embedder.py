@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import os
-
 
 class LocalEmbedder:
     """Embedding using local sentence-transformers model.

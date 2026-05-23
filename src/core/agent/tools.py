@@ -31,7 +31,7 @@ class Tool(ABC):
 
     name: str = ""
     description: str = ""
-    parameters: dict = {}  # JSON Schema for the tool's input
+    parameters: dict | None = None  # JSON Schema for the tool's input
 
     @abstractmethod
     def execute(self, **kwargs) -> str:
@@ -43,7 +43,7 @@ class Tool(ABC):
             "function": {
                 "name": self.name,
                 "description": self.description,
-                "parameters": self.parameters,
+                "parameters": self.parameters or {},
             },
         }
 
@@ -51,7 +51,7 @@ class Tool(ABC):
         return {
             "name": self.name,
             "description": self.description,
-            "input_schema": self.parameters,
+            "input_schema": self.parameters or {},
         }
 
 

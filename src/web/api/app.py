@@ -16,7 +16,7 @@ app = FastAPI(title="Agent Factory", version="0.1.0", description="Auto-generate
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -78,10 +78,15 @@ class ConfigUpdate(BaseModel):
 
 CONFIG_PATH = "config/active.yaml"
 
+_orchestrator = None
+
 
 def _get_orchestrator():
-    from src.core.orchestrator import Orchestrator
-    return Orchestrator(config_path=CONFIG_PATH)
+    global _orchestrator
+    if _orchestrator is None:
+        from src.core.orchestrator import Orchestrator
+        _orchestrator = Orchestrator(config_path=CONFIG_PATH)
+    return _orchestrator
 
 
 @app.get("/health")
@@ -97,6 +102,7 @@ async def list_providers():
 
 @app.post("/config")
 async def update_config(update: ConfigUpdate):
+    global _orchestrator
     config_path = Path(CONFIG_PATH)
     existing = {}
     if config_path.exists():
@@ -112,6 +118,7 @@ async def update_config(update: ConfigUpdate):
     with open(config_path, "w") as f:
         yaml.dump(existing, f, allow_unicode=True)
 
+    _orchestrator = None
     return {"status": "ok", "config": existing}
 
 
@@ -199,11 +206,23 @@ async def chat(request: ChatRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+UPLOAD_BASE = Path("./uploads").resolve()
+
+
 @app.post("/documents/upload")
 async def upload_document(file: UploadFile = File(...), target_dir: str = Form("./uploads")):
-    dest = Path(target_dir)
+    dest = (UPLOAD_BASE / target_dir).resolve()
+    if not str(dest).startswith(str(UPLOAD_BASE)):
+        raise HTTPException(status_code=400, detail="无效的上传目录")
     dest.mkdir(parents=True, exist_ok=True)
-    file_path = dest / file.filename
+
+    filename = Path(file.filename).name
+    if not filename or filename.startswith("."):
+        raise HTTPException(status_code=400, detail="无效的文件名")
+    file_path = dest / filename
+    if not str(file_path.resolve()).startswith(str(dest)):
+        raise HTTPException(status_code=400, detail="无效的文件路径")
+
     content = await file.read()
     file_path.write_bytes(content)
     return {"status": "ok", "path": str(file_path)}

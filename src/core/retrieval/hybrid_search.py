@@ -62,7 +62,7 @@ class HybridRetriever:
 
     def __init__(
         self,
-        vector_store: MilvusStore,
+        vector_store,
         embed_fn,
         vector_weight: float = 0.7,
         bm25_weight: float = 0.3,
